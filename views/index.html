@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>FileLens | File Metadata Microservice</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/public/style.css"
+  >
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <div class="logo">
+      <span class="logo-icon">⌁</span>
+      FileLens
+    </div>
+
+    <div class="status">
+      <span class="status-dot"></span>
+      API ONLINE
+    </div>
+  </nav>
+
+
+  <main class="container">
+
+    <section class="hero">
+
+      <div class="badge">
+        FILE METADATA API
+      </div>
+
+      <h1>
+        Inspect your files
+        <span>instantly.</span>
+      </h1>
+
+      <p>
+        Upload any file and get useful metadata such as
+        filename, MIME type and file size through a simple API.
+      </p>
+
+    </section>
+
+
+    <section class="upload-card">
+
+      <div class="card-header">
+
+        <div>
+          <p class="label">UPLOAD FILE</p>
+
+          <h2>
+            Analyze a file
+          </h2>
+        </div>
+
+        <div class="api-method">
+          POST
+        </div>
+
+      </div>
+
+
+      <form
+        id="upload-form"
+        enctype="multipart/form-data"
+        method="POST"
+        action="/api/fileanalyse"
+      >
+
+        <label
+          for="inputfield"
+          class="drop-zone"
+          id="drop-zone"
+        >
+
+          <div class="upload-icon">
+            ↑
+          </div>
+
+          <div class="upload-text">
+
+            <strong id="file-name">
+              Choose a file
+            </strong>
+
+            <span id="file-info">
+              Click here to browse your computer
+            </span>
+
+          </div>
+
+          <input
+            id="inputfield"
+            type="file"
+            name="upfile"
+            required
+          >
+
+        </label>
+
+
+        <button
+          id="button"
+          type="submit"
+        >
+          <span>Analyze File</span>
+          <span class="arrow">→</span>
+        </button>
+
+      </form>
+
+    </section>
+
+
+    <section
+      class="result-card"
+      id="result-card"
+    >
+
+      <div class="result-header">
+
+        <div>
+          <p class="label">API RESPONSE</p>
+
+          <h2>
+            File metadata
+          </h2>
+        </div>
+
+        <span class="response-status">
+          JSON
+        </span>
+
+      </div>
+
+
+      <div class="metadata-grid">
+
+        <div class="metadata-item">
+          <span>NAME</span>
+          <strong id="result-name">—</strong>
+        </div>
+
+        <div class="metadata-item">
+          <span>TYPE</span>
+          <strong id="result-type">—</strong>
+        </div>
+
+        <div class="metadata-item">
+          <span>SIZE</span>
+          <strong id="result-size">—</strong>
+        </div>
+
+      </div>
+
+
+      <div class="json-box">
+
+        <div class="json-top">
+
+          <span>
+            response.json
+          </span>
+
+          <span>
+            ●
+          </span>
+
+        </div>
+
+        <pre id="output">{
+  "status": "waiting",
+  "message": "Upload a file to see its metadata"
+}</pre>
+
+      </div>
+
+    </section>
+
+
+    <section class="info-section">
+
+      <div class="info-card">
+
+        <div class="info-number">
+          01
+        </div>
+
+        <h3>
+          Select a file
+        </h3>
+
+        <p>
+          Choose any file from your computer using the upload area.
+        </p>
+
+      </div>
+
+
+      <div class="info-card">
+
+        <div class="info-number">
+          02
+        </div>
+
+        <h3>
+          Send request
+        </h3>
+
+        <p>
+          The file is sent to the File Metadata API using POST.
+        </p>
+
+      </div>
+
+
+      <div class="info-card">
+
+        <div class="info-number">
+          03
+        </div>
+
+        <h3>
+          Get metadata
+        </h3>
+
+        <p>
+          Receive the filename, MIME type and file size as JSON.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <section class="api-section">
+
+      <p class="label">
+        API ENDPOINT
+      </p>
+
+      <div class="endpoint">
+        <span class="method">POST</span>
+        <code>/api/fileanalyse</code>
+      </div>
+
+      <p class="endpoint-description">
+        Send a multipart/form-data request with the file field
+        <code>upfile</code>.
+      </p>
+
+    </section>
+
+  </main>
+
+
+  <footer>
+
+    <p>
+      Built for
+      <strong>freeCodeCamp</strong>
+      File Metadata Microservice
+    </p>
+
+  </footer>
+
+
+  <script>
+
+    const form = document.getElementById('upload-form');
+
+    const input = document.getElementById('inputfield');
+
+    const dropZone = document.getElementById('drop-zone');
+
+    const fileName = document.getElementById('file-name');
+
+    const fileInfo = document.getElementById('file-info');
+
+    const resultName = document.getElementById('result-name');
+
+    const resultType = document.getElementById('result-type');
+
+    const resultSize = document.getElementById('result-size');
+
+    const output = document.getElementById('output');
+
+
+    // Display selected file
+    input.addEventListener('change', function () {
+
+      if (input.files.length > 0) {
+
+        const file = input.files[0];
+
+        fileName.textContent = file.name;
+
+        fileInfo.textContent =
+          formatBytes(file.size) +
+          ' • Ready to analyze';
+
+        dropZone.classList.add('selected');
+
+      }
+
+    });
+
+
+    // Submit file using fetch
+    form.addEventListener('submit', async function (event) {
+
+      event.preventDefault();
+
+      if (!input.files.length) {
+        return;
+      }
+
+      const formData = new FormData();
+
+      formData.append('upfile', input.files[0]);
+
+
+      output.textContent = 'Analyzing file...';
+
+
+      try {
+
+        const response = await fetch(
+          '/api/fileanalyse',
+          {
+            method: 'POST',
+            body: formData
+          }
+        );
+
+
+        const data = await response.json();
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            data.error || 'Upload failed'
+          );
+
+        }
+
+
+        resultName.textContent = data.name;
+
+        resultType.textContent = data.type;
+
+        resultSize.textContent =
+          formatBytes(data.size);
+
+
+        output.textContent =
+          JSON.stringify(data, null, 2);
+
+
+        document
+          .getElementById('result-card')
+          .classList.add('show');
+
+
+      } catch (error) {
+
+        output.textContent =
+          JSON.stringify(
+            {
+              error: error.message
+            },
+            null,
+            2
+          );
+
+      }
+
+    });
+
+
+    // Format bytes
+    function formatBytes(bytes) {
+
+      if (bytes === 0) {
+        return '0 Bytes';
+      }
+
+      const units = [
+        'Bytes',
+        'KB',
+        'MB',
+        'GB'
+      ];
+
+      const index =
+        Math.floor(
+          Math.log(bytes) / Math.log(1024)
+        );
+
+      return (
+        parseFloat(
+          (bytes / Math.pow(1024, index))
+            .toFixed(2)
+        ) +
+        ' ' +
+        units[index]
+      );
+
+    }
+
+  </script>
+
+</body>
+
+</html>
